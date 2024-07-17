@@ -23,8 +23,6 @@ type server struct {
 }
 
 func newServer(port uint16) *server {
-	
-	
 	return &server{
 		message: make(chan message),
 		port:    port,
@@ -44,17 +42,14 @@ func (s *server) handleConns(conn net.Conn, msg chan message) {
 			}
 			log.Fatal(err)
 		}
-		fmt.Println(len(s.conns))
 		msg <- message{
 			text:   string(buffer[:n]),
 			sender: conn,
 		}
 	}
-
 }
 
 func (s *server) handlemessages(msg chan message) {
-
 	for {
 		message := <-msg
 		if len(message.text) > 1 {

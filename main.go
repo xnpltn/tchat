@@ -2,14 +2,13 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net"
 	"os"
 )
-
-const PORT = 3033
 
 type message struct {
 	text   string
@@ -71,7 +70,9 @@ func (s *server) handlemessages(msg chan message) {
 }
 
 func main() {
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", PORT))
+	port := flag.Int64("port", 6969, ` port is a number specifying the port which the application will run on`)
+	flag.Parse()
+	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("localhost:%d", *port))
 	if err != nil {
 		log.Println("error: ", err)
 		os.Exit(1)
@@ -83,7 +84,7 @@ func main() {
 	}
 
 	fmt.Printf("Servr starting at : %s \n", listener.Addr().String())
-	server := newServer(PORT)
+	server := newServer(uint16(*port))
 	messageChan := make(chan message)
 	go server.handlemessages(messageChan)
 
